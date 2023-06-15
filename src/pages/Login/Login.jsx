@@ -1,104 +1,232 @@
-import { useContext, useEffect, useState } from 'react';
-import { loadCaptchaEnginge, LoadCanvasTemplate, validateCaptcha } from 'react-simple-captcha';
-import { AuthContext } from '../../providers/AuthProvider';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
-import Swal from 'sweetalert2'
-import SocialLogin from '../Shared/SocialLogin/SocialLogin';
+import React, { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import "./Login.css";
+import googleImg from "../../assets/socialLoiginImg/google.png";
+import gitHubImg from "../../assets/socialLoiginImg/github.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { GithubAuthProvider, GoogleAuthProvider } from "firebase/auth";
+import Swal from "sweetalert2";
+import { AuthContext } from "../../AuthProvider/AuthProvider";
+import { useForm } from "react-hook-form";
 
 const Login = () => {
-    const [disabled, setDisabled] = useState(true);
-    const { signIn } = useContext(AuthContext);
-    const navigate = useNavigate();
-    const location = useLocation();
+  const { login, signInGoogle, signInGithub, auth } = useContext(AuthContext);
+  const [toggleIcon, setToggleIcon] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
 
-    const from = location.state?.from?.pathname || "/";
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => {
+    login(data.email, data.password)
+      .then((result) => {
+        const loggedUser = result.user;
+        // console.log(loggedUser);
+        Swal.fire({
+          position: "top-center",
+          icon: "success",
+          title: "Your Log In Successful",
+          showConfirmButton: false,
+          buttonsStyling: "#32c770",
+          timer: 1500,
+        });
+        navigate(from, { replace: true });
+        reset();
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          buttonsStyling: {
+            color: "#32c770",
+            backgroundColor: "#32c770",
+          },
+          title: "Oops...",
+          title: `${err.message}`,
+          footer: '<a href="">Why do I have this issue?</a>',
+        });
+      });
+  };
 
-    useEffect(() => {
-        loadCaptchaEnginge(6);
-    }, [])
+  const handleGoogleLogin = () => {
+    const googleProvider = new GoogleAuthProvider();
+    signInGoogle(googleProvider)
+      .then((result) => {
+        const loggedUser = result.user;
+        const saveUser = {
+          email: loggedUser.email,
+          name: loggedUser.displayName,
+          photo: loggedUser?.photoURL,
+          role: "student",
+        };
+        // console.log(loggedUser);
+        fetch("http://localhost:5000/users", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(saveUser),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.insertedId || !data.insertedId) {
+              reset();
+              Swal.fire("Good job!", "User created successfully", "success");
+              navigate(from, { replace: true });
+            }
+          });
+      })
+      .catch((err) => {});
+  };
+  const handleGithubLogin = () => {
+    signInGithub()
+      .then((result) => {
+        const loggedUser = result.user;
+        const saveUser = {
+          email: loggedUser.email,
+          name: loggedUser.displayName,
+          photo: loggedUser?.photoURL,
+          role: "student",
+        };
+        // navigate(from, { replace: true });
+        fetch("http://localhost:5000/users", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(saveUser),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.insertedId || !data.insertedId) {
+              reset();
+              Swal.fire("Good job!", "User created successfully", "success");
+              navigate(from, { replace: true });
+            }
+          });
+      })
+      .catch((err) => {});
+  };
+  return (
+    <div className="container mx-auto ">
+      <div style={{ height: "80vh" }}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col justify-center items-center h-full"
+        >
+          <div className="flex flex-col justify-start items-start fullForm lg:w-2/6 md:w-3/6  shadow-2xl">
+            <h2 className="text-2xl mb-2" style={{ color: "#32c770" }}>
+              Please Login
+            </h2>
+            <input
+              type="email"
+              {...register("email", { required: true })}
+              placeholder="CreativaDesignHub.world@gmail.com"
+              className="border"
+              name="email"
+            />
+            <div className="w-full relative">
+              <input
+                type={`${toggleIcon ? "text" : "password"}`}
+                {...register("password", {
+                  required: true,
+                  minLength: 6,
+                  maxLength: 20,
+                  pattern:
+                    /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8}/,
+                })}
+                className="border m-0"
+                placeholder="******"
+                name="password"
+              />
 
-
-    const handleLogin = event => {
-        event.preventDefault();
-        const form = event.target;
-        const email = form.email.value;
-        const password = form.password.value;
-        console.log(email, password);
-        signIn(email, password)
-            .then(result => {
-                const user = result.user;
-                console.log(user);
-                Swal.fire({
-                    title: 'User Login Successful.',
-                    showClass: {
-                        popup: 'animate__animated animate__fadeInDown'
-                    },
-                    hideClass: {
-                        popup: 'animate__animated animate__fadeOutUp'
-                    }
-                });
-                navigate(from, { replace: true });
-            })
-    }
-
-    const handleValidateCaptcha = (e) => {
-        const user_captcha_value = e.target.value;
-        if (validateCaptcha(user_captcha_value)) {
-            setDisabled(false);
-        }
-        else {
-            setDisabled(true)
-        }
-    }
-
-    return (
-        <>
-            <Helmet>
-                <title>Dance Club | Login</title>
-            </Helmet>
-            <div className="hero min-h-screen bg-base-200">
-                <div className="hero-content flex-col md:flex-row-reverse">
-                    <div className="text-center md:w-1/2 lg:text-left">
-                        <h1 className="text-5xl font-bold">Login now!</h1>
-                        <p className="py-6">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
-                    </div>
-                    <div className="card md:w-1/2 max-w-sm shadow-2xl bg-base-100">
-                        <form onSubmit={handleLogin} className="card-body">
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Email</span>
-                                </label>
-                                <input type="email" name="email" placeholder="email" className="input input-bordered" />
-                            </div>
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Password</span>
-                                </label>
-                                <input type="password" name="password" placeholder="password" className="input input-bordered" />
-                            </div>
-                            <div className="form-control">
-                                <label className="label">
-                                    <LoadCanvasTemplate />
-                                </label>
-                                <input onBlur={handleValidateCaptcha} type="text" name="captcha" placeholder="type the captcha above" className="input input-bordered" />
-
-                            </div>
-                            {/* TODO: make button disabled for captcha */}
-                            <div className="form-control mt-6">
-                                <input disabled={false} className="btn btn-primary" type="submit" value="Login" />
-                            </div>
-                        </form>
-                        <p>
-                            <small className='px-7 text-xl'>New Here?
-                                <Link className='text-violet-500' to="/signup">Create an account</Link>
-                            </small></p>
-                        <SocialLogin></SocialLogin>
-                    </div>
-                </div>
+              <span
+                onClick={() => setToggleIcon(!toggleIcon)}
+                className="absolute bottom-4 right-4 toggle-icon"
+              >
+                {toggleIcon ? (
+                  <FontAwesomeIcon
+                    className="block"
+                    icon={faEyeSlash}
+                  ></FontAwesomeIcon>
+                ) : (
+                  <FontAwesomeIcon
+                    className="block"
+                    icon={faEye}
+                  ></FontAwesomeIcon>
+                )}
+              </span>
             </div>
-        </>
-    );
+            {errors.password?.type === "required" && (
+              <p className="text-red-600">Password is required</p>
+            )}
+            {errors.password?.type === "minLength" && (
+              <p className="text-red-600">Password must be 6 characters</p>
+            )}
+            {errors.password?.type === "maxLength" && (
+              <p className="text-red-600">Password less than 20 characters</p>
+            )}
+            {errors.password?.type === "pattern" && (
+              <p className="text-red-600">Password must be PATTERN rules</p>
+            )}
+            <p className="mb-3 text-end w-full forget-password">
+              Forget Password
+            </p>
+            {/* <span className="text-green-500 m-0">{successMassage}</span>
+            <span className="text-red-500 m-0">{errorMassage}</span> */}
+            <p className="mb-2">
+              Don't Have an Account?{" "}
+              <Link
+                style={{ color: "#32c770", fontWeight: 700 }}
+                to="/register"
+              >
+                Please Register
+              </Link>
+            </p>
+            <input
+              type="submit"
+              value="Login"
+              className="bg-[#32c770] border-0 text-white font-semibold cursor-pointer"
+            />
+            <div className="pt-5 flex items-center justify-between w-full">
+              <p>Or Sign in with:</p>
+              <div className="flex items-center justify-between">
+                <img
+                  onClick={handleGoogleLogin}
+                  style={{
+                    width: "50px",
+                    marginRight: "10px",
+                    border: "2px solid #32c770",
+                    cursor: "pointer",
+                    padding: "10px",
+                  }}
+                  src={googleImg}
+                  alt=""
+                />
+                {/* <img
+                  onClick={handleGithubLogin}
+                  style={{
+                    width: "50px",
+                    marginRight: "10px",
+                    border: "2px solid #32c770",
+                    cursor: "pointer",
+                    padding: "10px",
+                  }}
+                  src={gitHubImg}
+                  alt=""
+                /> */}
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default Login;
