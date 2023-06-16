@@ -17,13 +17,13 @@ const Classes = () => {
   const [axiosSecure] = useAxiosSecure();
 
   useEffect(() => {
-    fetch("http://localhost:5000/AllClassByViewr")
+    fetch("https://creative-design-hub-server.vercel.app/AllClassByViewr")
       .then((res) => res.json())
       .then((data) => setClasses(data));
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:5000/users")
+    fetch("https://creative-design-hub-server.vercel.app/users")
       .then((res) => res.json())
       .then((DbUsers) => {
         const currentUser = DbUsers.find(

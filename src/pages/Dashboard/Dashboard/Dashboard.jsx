@@ -20,7 +20,7 @@ const Dashboard = () => {
   //       setDbUser(currentUser);
   // });
   useEffect(() => {
-    fetch("http://localhost:5000/users")
+    fetch("https://creative-design-hub-server.vercel.app/users")
       .then((res) => res.json())
       .then((DBusers) => {
         const currentUser = DBusers.find((item) => item.email === user.email);

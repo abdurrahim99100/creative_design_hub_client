@@ -49,7 +49,7 @@ const Navbar = () => {
               <div className="flex-shrink-0 text-black font-semibold">
                 {/* Your logo or branding */}
                 <Link to="/">
-                  <img src={logo} className="w-40" alt="" />
+                  <img src={logo} className="w-32 bg-slate-400 rounded-xl" alt="" />
                 </Link>
               </div>
               {/* Desktop menu */}
@@ -59,21 +59,21 @@ const Navbar = () => {
                   <Link
                     to="/"
                     onClick={handleMenuClick}
-                    className="text-black hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    className="text-black hover:bg-gray-400 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Home
                   </Link>
                   <Link
                     to="/instructor"
                     onClick={handleMenuClick}
-                    className="text-black hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    className="text-black hover:bg-gray-400 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Instructors
                   </Link>
                   <Link
                     to="/classes"
                     onClick={handleMenuClick}
-                    className="text-black hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    className="text-black hover:bg-gray-400 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Classes
                   </Link>
@@ -81,7 +81,7 @@ const Navbar = () => {
                     <Link
                       to="/dashboard"
                       onClick={handleMenuClick}
-                      className="text-black hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                      className="text-black hover:bg-gray-400 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     >
                       Dashboard
                     </Link>

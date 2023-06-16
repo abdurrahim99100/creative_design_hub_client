@@ -39,7 +39,7 @@ const Comment = () => {
     };
 
     if (user) {
-      fetch("http://localhost:5000/comment", {
+      fetch("https://creative-design-hub-server.vercel.app/comment", {
         method: "POST",
         headers: {
           "content-type": "application/json",

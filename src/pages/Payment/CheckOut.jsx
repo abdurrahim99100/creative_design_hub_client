@@ -110,7 +110,7 @@ const CheckOut = ({ paymentClass }) => {
           });
       }
     }
-  };
+  }
 
   return (
     <>

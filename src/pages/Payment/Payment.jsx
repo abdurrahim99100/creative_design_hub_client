@@ -23,13 +23,12 @@ const Payment = () => {
     enabled: !loading,
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:5000/getSelectedClass/${user?.email}`
+        `https://creative-design-hub-server.vercel.app/getSelectedClass/${user?.email}`
       );
       // console.log(res.data);
       return res.data;
     },
   });
-  // console.log(selectedClassPrice);
   const paymentClass = selectedClassPrice.find((item) => item?.selectedId === id);
   // console.log(paymentClass);
   return (

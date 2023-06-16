@@ -7,7 +7,7 @@ const Instructor = () => {
   useTitle("All Instructor")
   const [instructors, setInstructors] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/allInstructor")
+    fetch("https://creative-design-hub-server.vercel.app/allInstructor")
       .then((res) => res.json())
       .then((data) => setInstructors(data));
   }, []);

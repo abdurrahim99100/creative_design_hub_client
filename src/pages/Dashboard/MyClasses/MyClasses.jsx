@@ -42,7 +42,7 @@ const MyClasses = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `http://localhost:5000/deleteClass/${item._id}`,
+          `https://creative-design-hub-server.vercel.app/deleteClass/${item._id}`,
           {
             method: "DELETE",
           }

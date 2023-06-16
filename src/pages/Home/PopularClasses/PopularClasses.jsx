@@ -15,12 +15,12 @@ const PopularClasses = () => {
 
   const [axiosSecure] = useAxiosSecure();
   useEffect(() => {
-    fetch("http://localhost:5000/popularClasses")
+    fetch("https://creative-design-hub-server.vercel.app/popularClasses")
       .then((res) => res.json())
       .then((data) => setPopularClass(data));
   }, []);
   useEffect(() => {
-    fetch("http://localhost:5000/users")
+    fetch("https://creative-design-hub-server.vercel.app/users")
       .then((res) => res.json())
       .then((DbUsers) => {
         const currentUser = DbUsers.find(
