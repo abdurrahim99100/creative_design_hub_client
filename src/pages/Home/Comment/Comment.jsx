@@ -27,7 +27,6 @@ const Comment = () => {
     const email = form.email.value;
     const comment = form.comment.value;
     const checked = check;
-    // console.log(check);
     const ratings = rating;
     const ourComment = {
       name,
