@@ -6,6 +6,7 @@ import useTitle from "../../../Hook/UseTitle";
 const Instructor = () => {
   useTitle("All Instructor")
   const [instructors, setInstructors] = useState([]);
+  
   useEffect(() => {
     fetch("https://creative-design-hub-server.vercel.app/allInstructor")
       .then((res) => res.json())
