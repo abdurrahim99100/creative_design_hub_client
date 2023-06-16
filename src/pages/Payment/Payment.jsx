@@ -25,7 +25,6 @@ const Payment = () => {
       const res = await axios.get(
         `https://creative-design-hub-server.vercel.app/getSelectedClass/${user?.email}`
       );
-      // console.log(res.data);
       return res.data;
     },
   });
