@@ -29,7 +29,6 @@ const Classes = () => {
         const currentUser = DbUsers.find(
           (DbUser) => DbUser?.email === user?.email
         );
-        // console.log(currentUser);
         setCurrentRole(currentUser?.role);
       });
   }, [user]);
