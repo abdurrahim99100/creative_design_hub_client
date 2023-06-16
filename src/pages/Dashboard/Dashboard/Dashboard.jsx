@@ -24,7 +24,6 @@ const Dashboard = () => {
       .then((res) => res.json())
       .then((DBusers) => {
         const currentUser = DBusers.find((item) => item.email === user.email);
-        // console.log(currentUser, "19");
         setDbUser(currentUser);
       });
   }, []);
