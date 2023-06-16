@@ -28,7 +28,6 @@ const Dashboard = () => {
       });
   }, []);
 
-  // console.log(DbUser);
   useEffect(() => {
     window.addEventListener("load", handleToggle);
     return () => {
