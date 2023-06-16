@@ -21,7 +21,6 @@ const PaymentHistory = () => {
       return res.data;
     },
   });
-  // console.log(paymentClass);
   if (isLoading) {
     return <span className="loading loading-dots loading-lg"></span>;
   }
