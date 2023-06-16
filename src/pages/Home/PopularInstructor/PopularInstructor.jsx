@@ -43,3 +43,4 @@ const PopularInstructor = () => {
 };
 
 export default PopularInstructor;
+// popular instructors section okay;
